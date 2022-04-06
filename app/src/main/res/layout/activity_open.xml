@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OpenActivity">
+
+    <Button
+        android:id="@+id/openButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="280dp"
+        android:text="Open!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/openBar"
+        app:layout_constraintVertical_bias="0.787" />
+
+    <SeekBar
+        android:id="@+id/openBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="300dp"
+        android:layout_height="87dp"
+        android:layout_marginTop="256dp"
+        android:indeterminate="false"
+        android:max="9"
+        android:progress="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/keypadSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Keypad"
+        app:layout_constraintStart_toStartOf="@+id/openBar"
+        app:layout_constraintTop_toBottomOf="@+id/openButton" />
+
+    <SeekBar
+        android:id="@+id/keypadBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="299dp"
+        android:layout_height="87dp"
+        android:layout_marginTop="16dp"
+        android:max="9"
+        android:progress="0"
+        app:layout_constraintEnd_toEndOf="@+id/openBar"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/keypadSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/keypadSwitch" />
+
+    <TextView
+        android:id="@+id/openTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:text="1"
+        app:layout_constraintEnd_toEndOf="@+id/openBar"
+        app:layout_constraintStart_toStartOf="@+id/openBar"
+        app:layout_constraintTop_toTopOf="@+id/openBar" />
+
+    <TextView
+        android:id="@+id/keypadTimeTextView"
+        android:layout_width="58dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="68dp"
+        android:text="1"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/keypadBar"
+        app:layout_constraintStart_toStartOf="@+id/keypadBar"
+        app:layout_constraintTop_toTopOf="@+id/keypadBar" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Save!"
+        app:layout_constraintStart_toStartOf="@+id/keypadBar"
+        app:layout_constraintTop_toBottomOf="@+id/keypadBar" />
+</androidx.constraintlayout.widget.ConstraintLayout>
