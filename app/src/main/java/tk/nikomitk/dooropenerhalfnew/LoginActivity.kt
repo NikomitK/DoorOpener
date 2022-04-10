@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
         var storage: Storage = Storage()
 
 
-        if (!storageFile.createNewFile()) {
+        if (!storageFile.createNewFile() && storageFile.readText().contains(":")) {
             storage = Gson().fromJson(storageFile.readText(), Storage::class.java)
             val intent = Intent(this, OpenActivity::class.java).apply {
                 putExtra("ipAddress", storage.ipAddress)

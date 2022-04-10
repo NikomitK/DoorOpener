@@ -19,6 +19,9 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_open)
 
+        // showing the back button in action bar
+        setSupportActionBar(findViewById(R.id.my_toolbar))
+
         val ipAddress = intent.getStringExtra("ipAddress")!!
         val token = intent.getStringExtra("token")!!
 
@@ -31,7 +34,6 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val saveButton: Button = findViewById(R.id.saveButton)
 
         keypadBar.isEnabled = false
-        saveButton.isEnabled = false
 
         openBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -47,17 +49,17 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         })
 
         openButton.setOnClickListener {
-            launch (Dispatchers.IO) {
+            launch(Dispatchers.IO) {
                 val response = sendMessage(
                     type = "open",
                     token = token,
                     content = openTimeTextView.text.toString(),
                     ipAddress = ipAddress
                 )
-                runOnUiThread{
+                runOnUiThread {
                     Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
                 }
-                if(response.internalMessage.lowercase().contains("invalid token")) {
+                if (response.internalMessage.lowercase().contains("invalid token")) {
                     logout()
                 }
             }
@@ -65,7 +67,6 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         keypadSwitch.setOnCheckedChangeListener { p0, _ ->
             keypadBar.isEnabled = p0.isChecked
-            saveButton.isEnabled = p0.isChecked
         }
 
         keypadBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -82,7 +83,20 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         })
 
         saveButton.setOnClickListener {
-
+            launch(Dispatchers.IO) {
+                val response = sendMessage(
+                    type = "keypadConfig",
+                    token = token,
+                    content = if (keypadSwitch.isChecked) keypadTimeTextView.text.toString() else (-1).toString(),
+                    ipAddress = ipAddress
+                )
+                runOnUiThread {
+                    Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
+                }
+                if (response.internalMessage.lowercase().contains("invalid token")) {
+                    logout()
+                }
+            }
         }
     }
 
