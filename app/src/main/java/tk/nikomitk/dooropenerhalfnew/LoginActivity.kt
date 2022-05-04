@@ -20,6 +20,8 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketTimeoutException
 
+// please don't question my use of expression marks at the end of every displayed string :)
+
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
                 putExtra("token", storage.token)
             }
             startActivity(intent)
+            finish()
         }
 
 
@@ -106,9 +109,13 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     startActivity(intent)
+                    finish()
                 }
             }
         }
+    }
+
+    private fun logout() {
     }
 
 }

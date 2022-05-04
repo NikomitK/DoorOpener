@@ -1,6 +1,9 @@
 package tk.nikomitk.dooropenerhalfnew
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
@@ -19,8 +22,10 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_open)
 
-        // showing the back button in action bar
-        setSupportActionBar(findViewById(R.id.my_toolbar))
+        val supportActBar:
+                androidx.appcompat.widget.Toolbar = findViewById(R.id.my_toolbar)
+        setSupportActionBar(supportActBar)
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val ipAddress = intent.getStringExtra("ipAddress")!!
         val token = intent.getStringExtra("token")!!
@@ -100,7 +105,12 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    private suspend fun sendMessage(type: String, token: String, content: String, ipAddress: String): Response {
+    private suspend fun sendMessage(
+        type: String,
+        token: String,
+        content: String,
+        ipAddress: String
+    ): Response {
         val message = Message(type, token, content)
         val test: Deferred<Response> = coroutineScope {
             async {
@@ -116,7 +126,25 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         return test.await()
     }
 
-    private fun logout(){
-        // TODO(not implemented yet!)
+    private fun logout() {
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.resource_menu, menu)
+
+        return true
+    }
+
+    // TODO show otps, put add otp in otp screen and turn otp part here into use otp
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> {
+            startActivity(Intent(this, SettingsActivity::class.java))
+            true
+        }
+
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }
