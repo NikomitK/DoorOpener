@@ -9,4 +9,28 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Toolbar Titles -->
+    <string name="open_header">The better door opener ;P</string>
+    <string name="settings_header">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="logs_header">Logs</string>
+    <string name="administration_header">Administration</string>
+
+    <!-- Administration Preferences -->
+    <string name="changePin_title">Change pin</string>
+    <string name="globalLogout_title">Log everyone out</string>
+    <string name="globalLogout_summary">Logs everyone out of this Raspberry Pi</string>
+    <string name="reset_title">Reset device</string>
+    <string name="reset_summary">This resets the Server on the Raspberry Pi</string>
+    <string name="logout_title">Logout</string>
+    <string name="logout_summary">Logs you out of this app</string>
+
+
+    <!-- Logs Preferences -->
+    <string name="sync_title">Sync logs automatically</string>
+    <string name="sync_summary">Sync the logs automatically when you are opening the door etc</string>
+    <string name="keepLogs_title">Keep logs</string>
 </resources>
