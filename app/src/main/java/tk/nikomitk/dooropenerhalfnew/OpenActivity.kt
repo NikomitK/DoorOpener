@@ -17,11 +17,18 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    // TODO discrete values, OTP stuff, logout button
+
+    companion object {
+        lateinit var testlul: OpenActivity
+        lateinit var globalIpAdress: String
+        lateinit var globalToken: String
+    }
+
+    // TODO discrete values, OTP stuff
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_open)
-
+        testlul = this
         val supportActBar:
                 androidx.appcompat.widget.Toolbar = findViewById(R.id.my_toolbar)
         setSupportActionBar(supportActBar)
@@ -29,10 +36,15 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         val ipAddress = intent.getStringExtra("ipAddress")!!
         val token = intent.getStringExtra("token")!!
+        globalIpAdress = ipAddress
+        globalToken = token
 
         val openBar: SeekBar = findViewById(R.id.openBar)
         val openTimeTextView: TextView = findViewById(R.id.openTimeTextView)
         val openButton: Button = findViewById(R.id.openButton)
+        val otpAddressText: EditText = findViewById(R.id.textOnetimeAddress)
+        val otpPinText: EditText = findViewById(R.id.textOnetimePin)
+        val otpUseButton: Button = findViewById(R.id.buttonUseOtp)
         val keypadSwitch: Switch = findViewById(R.id.keypadSwitch)
         val keypadBar: SeekBar = findViewById(R.id.keypadBar)
         val keypadTimeTextView: TextView = findViewById(R.id.keypadTimeTextView)
@@ -66,6 +78,23 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 }
                 if (response.internalMessage.lowercase().contains("invalid token")) {
                     logout()
+                }
+            }
+        }
+
+        otpUseButton.setOnClickListener {
+            if(otpAddressText.text.isNotEmpty() && otpPinText.text.isNotEmpty()) {
+                launch (Dispatchers.IO) {
+                    val response = sendMessage(
+                        type = "open",
+                        token = otpPinText.text.toString(),
+                        content = openTimeTextView.text.toString(),
+                        ipAddress = otpAddressText.text.toString()
+                    )
+                    runOnUiThread {
+                        Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
+                    }
+
                 }
             }
         }
@@ -127,7 +156,8 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun logout() {
-
+        startActivity(Intent(this, LoginActivity::class.java).putExtra("logout", true))
+        finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -139,7 +169,20 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     // TODO show otps, put add otp in otp screen and turn otp part here into use otp
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
-            startActivity(Intent(this, SettingsActivity::class.java))
+            startActivity(Intent(this, SettingsActivity::class.java).apply {
+                putExtra("ipAddress", globalIpAdress)
+                putExtra("token", globalToken)
+            })
+            true
+        }
+
+        R.id.action_log -> {
+            startActivity(Intent(this, LogsActivity::class.java))
+            true
+        }
+
+        R.id.action_otp -> {
+            startActivity(Intent(this, OTPActivity::class.java))
             true
         }
 
