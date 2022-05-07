@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_settings"
-        android:title="Settings"
+        android:title="@string/settings_title"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_log"
-        android:title="Show logs"
+        android:title="@string/logs_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_otp"
+        android:title="@string/otp_title"
         app:showAsAction="never" />
 </menu>
