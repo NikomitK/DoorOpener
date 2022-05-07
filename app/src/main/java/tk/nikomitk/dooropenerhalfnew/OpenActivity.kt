@@ -177,7 +177,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         R.id.action_log -> {
-            startActivity(Intent(this, LogsActivity::class.java))
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("ipAddress", globalIpAdress).putExtra("token", globalToken))
             true
         }
 

@@ -13,13 +13,12 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:title="@string/open_header"
-        app:menu="@menu/resource_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/resource_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        />
+        app:title="@string/open_header" />
 
 
     <Button
@@ -169,7 +168,6 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
         android:text="IP ADDRESS:"
         app:layout_constraintBottom_toBottomOf="@+id/textOnetimeAddress"
@@ -179,7 +177,6 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
         android:text="OTP:"
         app:layout_constraintBottom_toBottomOf="@+id/textOnetimePin"

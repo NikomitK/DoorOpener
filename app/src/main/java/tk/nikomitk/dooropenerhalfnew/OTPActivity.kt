@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import tk.nikomitk.dooropenerhalfnew.SettingsActivity.Companion.ipAddress
 import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
 import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
 import java.io.BufferedReader
@@ -39,7 +38,7 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         storage = Gson().fromJson(storageFile.readText(), Storage::class.java)
 
         adapter = CustomAdapter(storage.otps, this)
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = findViewById(R.id.logRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
@@ -58,7 +57,8 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     ipAddress = storage.ipAddress!!
                 )
                 runOnUiThread {
-                    Toast.makeText(this@OTPActivity, response.text, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@OTPActivity, response.text, Toast.LENGTH_SHORT).show()
                     if(response.internalMessage == "success"){
                         storage.otps.add(
                             newOtp
