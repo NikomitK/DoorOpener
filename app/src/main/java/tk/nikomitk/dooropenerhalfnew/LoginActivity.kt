@@ -30,8 +30,11 @@ class LoginActivity : AppCompatActivity() {
         //TODO remember pin check etc, load ip address from storage, hash pin
         var storageFile: File = File(applicationContext.filesDir, "storageFile")
 
-        var storage: Storage = Storage()
+        if(intent.getBooleanExtra("logout", false)){
+            storageFile.writeText("")
+        }
 
+        var storage: Storage = Storage()
 
         if (!storageFile.createNewFile() && storageFile.readText().contains(":")) {
             storage = Gson().fromJson(storageFile.readText(), Storage::class.java)
@@ -113,9 +116,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun logout() {
     }
 
 }

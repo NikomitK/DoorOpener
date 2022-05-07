@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DoorOpenerHalfNew.NoActionBar">
         <activity
+            android:name=".OTPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LogsActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />

@@ -13,13 +13,12 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:title="@string/open_header"
-        app:menu="@menu/resource_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/resource_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        />
+        app:title="@string/open_header" />
 
 
     <Button
@@ -114,20 +113,20 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         android:text="Settings for a physical keypad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonUseOtp" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/textOnetimeAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -137,19 +136,49 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Add onetime pins"
+        android:layout_marginTop="32dp"
+        android:text="Use onetime pins"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/openButton" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonUseOtp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="add!"
+        android:text="use!"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/textOnetimePin" />
+
+    <EditText
+        android:id="@+id/textOnetimePin"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@+id/textOnetimeAddress"
+        app:layout_constraintTop_toBottomOf="@+id/textOnetimeAddress" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="IP ADDRESS:"
+        app:layout_constraintBottom_toBottomOf="@+id/textOnetimeAddress"
+        app:layout_constraintEnd_toStartOf="@+id/textOnetimeAddress" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="OTP:"
+        app:layout_constraintBottom_toBottomOf="@+id/textOnetimePin"
+        app:layout_constraintEnd_toStartOf="@+id/textOnetimePin" />
 </androidx.constraintlayout.widget.ConstraintLayout>

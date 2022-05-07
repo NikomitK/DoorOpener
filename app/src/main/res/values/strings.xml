@@ -14,10 +14,12 @@
     <!-- Toolbar Titles -->
     <string name="open_header">The better door opener ;P</string>
     <string name="settings_header">Settings</string>
+    <string name="otp_header">One-time-passwords</string>
 
     <!-- Preference Titles -->
     <string name="logs_header">Logs</string>
     <string name="administration_header">Administration</string>
+    <string name="logout_header">Logout</string>
 
     <!-- Administration Preferences -->
     <string name="changePin_title">Change pin</string>
@@ -33,4 +35,10 @@
     <string name="sync_title">Sync logs automatically</string>
     <string name="sync_summary">Sync the logs automatically when you are opening the door etc</string>
     <string name="keepLogs_title">Keep logs</string>
+
+    <!-- Action Menu Titles -->
+    <string name="settings_title">Settings</string>
+    <string name="logs_title">Logs</string>
+    <string name="otp_title">OTPs</string>
+    <string name="title_activity_logs">LogsActivity</string>
 </resources>
