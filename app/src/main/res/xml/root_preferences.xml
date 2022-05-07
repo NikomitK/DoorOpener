@@ -3,25 +3,20 @@
     <PreferenceCategory app:title="@string/logs_header">
 
         <SwitchPreferenceCompat
+            app:defaultValue="true"
             app:key="keepLogs"
-            app:title="@string/keepLogs_title"/>
-
-        <SwitchPreferenceCompat
-            app:dependency="keepLogs"
-            app:key="sync"
-            app:title="@string/sync_title"
-            app:summary="@string/sync_summary"/>
+            app:title="@string/keepLogs_title" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Administration">
+    <PreferenceCategory android:title="@string/administration_header">
 
         <EditTextPreference
-            android:defaultValue="false"
             android:key="changePin"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/changePin_title"/>
+            android:title="@string/changePin_title" />
+
         <Preference
             android:key="resetLogins"
             android:summary="@string/globalLogout_summary"
@@ -32,10 +27,15 @@
             android:summary="@string/reset_summary"
             android:title="@string/reset_title"/>
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/logout_header">
+
         <Preference
             android:key="logoutButton"
             android:summary="@string/logout_summary"
             android:title="@string/logout_title"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>
