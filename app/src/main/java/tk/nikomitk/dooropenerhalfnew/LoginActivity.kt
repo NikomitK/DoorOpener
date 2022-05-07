@@ -118,8 +118,4 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun logout() {
-
-    }
-
 }

@@ -7,15 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
-import kotlinx.coroutines.*
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
-import java.io.BufferedReader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
 import java.io.File
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.net.InetSocketAddress
-import java.net.Socket
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.random.Random
@@ -44,7 +41,7 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         val addOtpButton: FloatingActionButton = findViewById(R.id.addOtpButton)
         addOtpButton.setOnClickListener {
-            launch (Dispatchers.IO) {
+            launch(Dispatchers.IO) {
                 val newOtp = Otp(
                     Random(LocalTime.now().nano)
                         .nextInt(1000, 999999).toString(),
@@ -58,8 +55,9 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 )
                 runOnUiThread {
                     Toast.makeText(
-                        this@OTPActivity, response.text, Toast.LENGTH_SHORT).show()
-                    if(response.internalMessage == "success"){
+                        this@OTPActivity, response.text, Toast.LENGTH_SHORT
+                    ).show()
+                    if (response.internalMessage == "success") {
                         storage.otps.add(
                             newOtp
                         )
@@ -71,8 +69,8 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    fun removeOtp(position: Int){
-        launch (Dispatchers.IO) {
+    fun removeOtp(position: Int) {
+        launch(Dispatchers.IO) {
             val response = sendMessage(
                 type = "otpRemove",
                 token = storage.token!!,
@@ -81,34 +79,13 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             )
             runOnUiThread {
                 Toast.makeText(this@OTPActivity, response.text, Toast.LENGTH_SHORT).show()
-                if(response.internalMessage == "success"){
+                if (response.internalMessage == "success") {
                     storage.otps.removeAt(position)
                     adapter.notifyDataSetChanged()
                     storageFile.writeText(Gson().toJson(storage))
                 }
             }
         }
-    }
-
-    private suspend fun sendMessage(
-        type: String,
-        token: String,
-        content: String,
-        ipAddress: String
-    ): Response {
-        val message = Message(type, token, content)
-        val test: Deferred<Response> = coroutineScope {
-            async {
-                val socket = Socket()
-                socket.connect(InetSocketAddress(ipAddress, 5687), 1500)
-                PrintWriter(socket.getOutputStream(), true).println(Gson().toJson(message))
-                return@async Gson().fromJson(
-                    BufferedReader(InputStreamReader(socket.getInputStream())).readLine(),
-                    Response::class.java
-                )
-            }
-        }
-        return test.await()
     }
 
     override fun onSupportNavigateUp(): Boolean {

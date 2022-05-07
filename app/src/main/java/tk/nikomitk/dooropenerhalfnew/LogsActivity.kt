@@ -10,13 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.thekhaeng.recyclerviewmargin.LinearLayoutMargin
 import kotlinx.coroutines.*
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.net.InetSocketAddress
-import java.net.Socket
 
 class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -33,31 +26,9 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         setSupportActionBar(supportActBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-
         ipAddress = intent.getStringExtra("ipAddress")!!
         token = intent.getStringExtra("token")!!
 
-    }
-
-    private suspend fun sendMessage(
-        type: String,
-        token: String,
-        content: String,
-        ipAddress: String
-    ): Response {
-        val message = Message(type, token, content)
-        val test: Deferred<Response> = coroutineScope {
-            async {
-                val socket = Socket()
-                socket.connect(InetSocketAddress(ipAddress, 5687), 1500)
-                PrintWriter(socket.getOutputStream(), true).println(Gson().toJson(message))
-                return@async Gson().fromJson(
-                    BufferedReader(InputStreamReader(socket.getInputStream())).readLine(),
-                    Response::class.java
-                )
-            }
-        }
-        return test.await()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,7 +39,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_sync -> {
             launch(Dispatchers.IO) {
-                val response = sendMessage(
+                val response = NetworkUtil.sendMessage(
                     type = "requestLogs",
                     token = token,
                     content = "",
@@ -93,7 +64,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     runOnUiThread {
                         Toast.makeText(
                             this@LogsActivity,
-                            "Error",
+                            response.text,
                             Toast.LENGTH_SHORT
                         ).show()
                     }

@@ -6,15 +6,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
-import kotlinx.coroutines.*
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.net.InetSocketAddress
-import java.net.Socket
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
 
 class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
@@ -83,8 +79,8 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         otpUseButton.setOnClickListener {
-            if(otpAddressText.text.isNotEmpty() && otpPinText.text.isNotEmpty()) {
-                launch (Dispatchers.IO) {
+            if (otpAddressText.text.isNotEmpty() && otpPinText.text.isNotEmpty()) {
+                launch(Dispatchers.IO) {
                     val response = sendMessage(
                         type = "open",
                         token = otpPinText.text.toString(),
@@ -134,27 +130,6 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    private suspend fun sendMessage(
-        type: String,
-        token: String,
-        content: String,
-        ipAddress: String
-    ): Response {
-        val message = Message(type, token, content)
-        val test: Deferred<Response> = coroutineScope {
-            async {
-                val socket = Socket()
-                socket.connect(InetSocketAddress(ipAddress, 5687), 1500)
-                PrintWriter(socket.getOutputStream(), true).println(Gson().toJson(message))
-                return@async Gson().fromJson(
-                    BufferedReader(InputStreamReader(socket.getInputStream())).readLine(),
-                    Response::class.java
-                )
-            }
-        }
-        return test.await()
-    }
-
     private fun logout() {
         startActivity(Intent(this, LoginActivity::class.java).putExtra("logout", true))
         finish()
@@ -166,7 +141,6 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         return true
     }
 
-    // TODO show otps, put add otp in otp screen and turn otp part here into use otp
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             startActivity(Intent(this, SettingsActivity::class.java).apply {
@@ -177,7 +151,12 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         R.id.action_log -> {
-            startActivity(Intent(this, LogsActivity::class.java).putExtra("ipAddress", globalIpAdress).putExtra("token", globalToken))
+            startActivity(
+                Intent(this, LogsActivity::class.java).putExtra(
+                    "ipAddress",
+                    globalIpAdress
+                ).putExtra("token", globalToken)
+            )
             true
         }
 
