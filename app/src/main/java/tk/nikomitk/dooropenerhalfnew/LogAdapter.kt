@@ -27,7 +27,7 @@ class LogAdapter(private val dataSet: Array<String>) :
                 .startsWith("[ERROR]")
         ) holder.itemView.setBackgroundResource(R.drawable.customborder_red)
         else if (dataSet[position].substring(0, 15)
-                .contains("[WARING]")
+                .startsWith("[WARN")
         ) holder.itemView.setBackgroundResource(R.drawable.customborder_yellow)
     }
 

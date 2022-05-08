@@ -1,5 +1,6 @@
 package tk.nikomitk.dooropenerhalfnew
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.thekhaeng.recyclerviewmargin.LinearLayoutMargin
 import kotlinx.coroutines.*
+import java.io.File
 
 class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
-    lateinit var ipAddress: String
-    lateinit var token: String
-    lateinit var adapter: LogAdapter
-    lateinit var logArray: Array<String>
+    private lateinit var ipAddress: String
+    private lateinit var token: String
+    private lateinit var adapter: LogAdapter
+    private lateinit var logArray: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,17 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         ipAddress = intent.getStringExtra("ipAddress")!!
         token = intent.getStringExtra("token")!!
+
+        val latestLogFile = File(applicationContext.filesDir, "latestLog.log")
+        if(latestLogFile.exists() && latestLogFile.readText().isNotEmpty()) {
+            logArray = Gson().fromJson(latestLogFile.readText(), Array<String>::class.java)
+            adapter = LogAdapter(logArray)
+            val recyclerView: RecyclerView = findViewById(R.id.logRecyclerView)
+            recyclerView.layoutManager = LinearLayoutManager(this@LogsActivity)
+            recyclerView.adapter = adapter
+            recyclerView.addItemDecoration(LinearLayoutMargin(10))
+            Toast.makeText(this, "Showing latest stored log", Toast.LENGTH_SHORT).show()
+        }
 
     }
 
@@ -46,7 +59,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     ipAddress = ipAddress
                 )
                 if (response.internalMessage == "success") {
-
+                    File(applicationContext.filesDir, "latestLog.log").writeText(response.text)
                     runOnUiThread {
                         logArray = Gson().fromJson(response.text, Array<String>::class.java)
                         adapter = LogAdapter(logArray)
@@ -68,6 +81,9 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                    if(response.internalMessage == "invalid token") {
+                        logout()
+                    }
                 }
             }
             true
@@ -75,6 +91,12 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun logout() {
+        startActivity(Intent(this, LoginActivity::class.java).putExtra("logout", true))
+        OpenActivity.thisActivity.finish()
+        finish()
     }
 
     override fun onSupportNavigateUp(): Boolean {

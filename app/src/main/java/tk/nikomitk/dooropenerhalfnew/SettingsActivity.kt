@@ -142,7 +142,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         private fun logout() {
             startActivity(Intent(this.context, LoginActivity::class.java).putExtra("logout", true))
-            OpenActivity.testlul.finish()
+            OpenActivity.thisActivity.finish()
             requireActivity().finish()
         }
     }

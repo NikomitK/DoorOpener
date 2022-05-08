@@ -15,8 +15,8 @@ import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
 class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     companion object {
-        lateinit var testlul: OpenActivity
-        lateinit var globalIpAdress: String
+        lateinit var thisActivity: OpenActivity
+        lateinit var globalIpAddress: String
         lateinit var globalToken: String
     }
 
@@ -24,15 +24,14 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_open)
-        testlul = this
+        thisActivity = this
         val supportActBar:
                 androidx.appcompat.widget.Toolbar = findViewById(R.id.my_toolbar)
         setSupportActionBar(supportActBar)
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val ipAddress = intent.getStringExtra("ipAddress")!!
         val token = intent.getStringExtra("token")!!
-        globalIpAdress = ipAddress
+        globalIpAddress = ipAddress
         globalToken = token
 
         val openBar: SeekBar = findViewById(R.id.openBar)
@@ -50,7 +49,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         openBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                openTimeTextView.text = (p0!!.progress + 1).toString()
+                (p0!!.progress + 1).toString().also { openTimeTextView.text = it }
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -90,7 +89,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     runOnUiThread {
                         Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
                     }
-
+                    if(response.internalMessage == "success") otpPinText.setText("")
                 }
             }
         }
@@ -101,7 +100,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         keypadBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                keypadTimeTextView.text = (p0!!.progress + 1).toString()
+                (p0!!.progress + 1).toString().also { keypadTimeTextView.text = it }
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -144,7 +143,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             startActivity(Intent(this, SettingsActivity::class.java).apply {
-                putExtra("ipAddress", globalIpAdress)
+                putExtra("ipAddress", globalIpAddress)
                 putExtra("token", globalToken)
             })
             true
@@ -154,7 +153,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             startActivity(
                 Intent(this, LogsActivity::class.java).putExtra(
                     "ipAddress",
-                    globalIpAdress
+                    globalIpAddress
                 ).putExtra("token", globalToken)
             )
             true
