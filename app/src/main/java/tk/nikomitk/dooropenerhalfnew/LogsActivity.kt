@@ -95,7 +95,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun logout() {
         startActivity(Intent(this, LoginActivity::class.java).putExtra("logout", true))
-        OpenActivity.testlul.finish()
+        OpenActivity.thisActivity.finish()
         finish()
     }
 
