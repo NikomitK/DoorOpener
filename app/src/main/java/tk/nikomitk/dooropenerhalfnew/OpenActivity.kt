@@ -90,7 +90,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     runOnUiThread {
                         Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
                     }
-
+                    if(response.internalMessage == "success") otpPinText.setText("")
                 }
             }
         }
