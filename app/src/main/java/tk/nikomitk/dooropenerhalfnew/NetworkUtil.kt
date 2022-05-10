@@ -10,9 +10,9 @@ import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
-import java.lang.Exception
 import java.net.InetSocketAddress
-import java.net.Socket
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
 
 object NetworkUtil {
     suspend fun sendMessage(
@@ -21,19 +21,24 @@ object NetworkUtil {
         content: String,
         ipAddress: String
     ): Response {
+
         val message = Message(type, token, content)
         val test: Deferred<Response> = coroutineScope {
-            async (Dispatchers.IO) {
-                val socket = Socket()
-                try{
+            async(Dispatchers.IO) {
+                val factory = SSLSocketFactory.getDefault()
+                val socket = factory.createSocket() as SSLSocket
+                try {
                     socket.connect(InetSocketAddress(ipAddress, 5687), 1500)
-                    PrintWriter(socket.getOutputStream(), true).println(Gson().toJson(message))
+                    PrintWriter(socket.outputStream, true).println(Gson().toJson(message))
                     return@async Gson().fromJson(
-                        BufferedReader(InputStreamReader(socket.getInputStream())).readLine(),
+                        BufferedReader(InputStreamReader(socket.inputStream)).readLine(),
                         Response::class.java
                     )
                 } catch (exception: Exception) {
                     return@async Response("Timeout :c", "timeout")
+                } catch (exception: java.lang.Exception) {
+                    exception.printStackTrace()
+                    return@async Response(exception.message!!, "Not sent")
                 }
             }
         }
