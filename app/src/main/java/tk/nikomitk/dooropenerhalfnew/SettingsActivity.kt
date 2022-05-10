@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
 
 class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    //TODO turn logout preference red, delete otps
+    //TODO turn logout preference red
 
     companion object {
         lateinit var ipAddress: String
@@ -39,7 +39,6 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
         }
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
