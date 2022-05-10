@@ -29,8 +29,8 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 androidx.appcompat.widget.Toolbar = findViewById(R.id.my_toolbar)
         setSupportActionBar(supportActBar)
 
-        val ipAddress = intent.getStringExtra("ipAddress")!!
-        val token = intent.getStringExtra("token")!!
+        val ipAddress = intent.getStringExtra(getString(R.string.ipaddress_extra))!!
+        val token = intent.getStringExtra(getString(R.string.token_extra))!!
         globalIpAddress = ipAddress
         globalToken = token
 
@@ -63,7 +63,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         openButton.setOnClickListener {
             launch(Dispatchers.IO) {
                 val response = sendMessage(
-                    type = "open",
+                    type = getString(R.string.open_type),
                     token = token,
                     content = openTimeTextView.text.toString(),
                     ipAddress = ipAddress
@@ -71,7 +71,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 runOnUiThread {
                     Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
                 }
-                if (response.internalMessage.lowercase().contains("invalid token")) {
+                if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal))) {
                     logout()
                 }
             }
@@ -81,7 +81,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             if (otpAddressText.text.isNotEmpty() && otpPinText.text.isNotEmpty()) {
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "open",
+                        type = getString(R.string.open_type),
                         token = otpPinText.text.toString(),
                         content = openTimeTextView.text.toString(),
                         ipAddress = otpAddressText.text.toString()
@@ -89,7 +89,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     runOnUiThread {
                         Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
                     }
-                    if (response.internalMessage == "success") otpPinText.setText("")
+                    if (response.internalMessage == getString(R.string.success_internal)) otpPinText.setText("")
                 }
             }
         }
@@ -114,7 +114,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         saveButton.setOnClickListener {
             launch(Dispatchers.IO) {
                 val response = sendMessage(
-                    type = "keypadConfig",
+                    type = getString(R.string.configure_keypad_type),
                     token = token,
                     content = if (keypadSwitch.isChecked) keypadTimeTextView.text.toString() else (-1).toString(),
                     ipAddress = ipAddress
@@ -122,7 +122,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 runOnUiThread {
                     Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
                 }
-                if (response.internalMessage.lowercase().contains("invalid token")) {
+                if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal))) {
                     logout()
                 }
             }
@@ -130,7 +130,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun logout() {
-        startActivity(Intent(this, LoginActivity::class.java).putExtra("logout", true))
+        startActivity(Intent(this, LoginActivity::class.java).putExtra(getString(R.string.logout_extra), true))
         finish()
     }
 
@@ -143,8 +143,8 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             startActivity(Intent(this, SettingsActivity::class.java).apply {
-                putExtra("ipAddress", globalIpAddress)
-                putExtra("token", globalToken)
+                putExtra(getString(R.string.ipaddress_extra), globalIpAddress)
+                putExtra(getString(R.string.token_extra), globalToken)
             })
             true
         }
@@ -152,9 +152,9 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         R.id.action_log -> {
             startActivity(
                 Intent(this, LogsActivity::class.java).putExtra(
-                    "ipAddress",
+                    getString(R.string.ipaddress_extra),
                     globalIpAddress
-                ).putExtra("token", globalToken)
+                ).putExtra(getString(R.string.token_extra), globalToken)
             )
             true
         }

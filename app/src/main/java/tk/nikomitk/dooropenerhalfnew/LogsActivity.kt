@@ -28,8 +28,8 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         setSupportActionBar(supportActBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        ipAddress = intent.getStringExtra("ipAddress")!!
-        token = intent.getStringExtra("token")!!
+        ipAddress = intent.getStringExtra(getString(R.string.ipaddress_extra))!!
+        token = intent.getStringExtra(getString(R.string.token_extra))!!
 
         val latestLogFile = File(applicationContext.filesDir, "latestLog.log")
         if (latestLogFile.exists() && latestLogFile.readText().isNotEmpty()) {
@@ -39,7 +39,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             recyclerView.layoutManager = LinearLayoutManager(this@LogsActivity)
             recyclerView.adapter = adapter
             recyclerView.addItemDecoration(LinearLayoutMargin(10))
-            Toast.makeText(this, "Showing latest stored log", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.latest_log_toast), Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -53,12 +53,12 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         R.id.action_sync -> {
             launch(Dispatchers.IO) {
                 val response = NetworkUtil.sendMessage(
-                    type = "requestLogs",
+                    type = getString(R.string.request_logs_type),
                     token = token,
                     content = "",
                     ipAddress = ipAddress
                 )
-                if (response.internalMessage == "success") {
+                if (response.internalMessage == getString(R.string.success_internal)) {
                     File(applicationContext.filesDir, "latestLog.log").writeText(response.text)
                     runOnUiThread {
                         logArray = Gson().fromJson(response.text, Array<String>::class.java)
@@ -69,7 +69,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         recyclerView.addItemDecoration(LinearLayoutMargin(10))
                         Toast.makeText(
                             this@LogsActivity,
-                            "Successfully synced logs",
+                            getString(R.string.synced_logs_toast),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -81,7 +81,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    if (response.internalMessage == "invalid token") {
+                    if (response.internalMessage == getString(R.string.invalid_token_internal)) {
                         logout()
                     }
                 }
@@ -94,7 +94,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun logout() {
-        startActivity(Intent(this, LoginActivity::class.java).putExtra("logout", true))
+        startActivity(Intent(this, LoginActivity::class.java).putExtra(getString(R.string.logout_extra), true))
         OpenActivity.thisActivity.finish()
         finish()
     }

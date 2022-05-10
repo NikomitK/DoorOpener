@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DoorOpenerHalfNew</string>
     <string name="title_activity_open">OpenActivity</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -41,4 +42,39 @@
     <string name="logs_title">Logs</string>
     <string name="otp_title">OTPs</string>
     <string name="title_activity_logs">LogsActivity</string>
+
+    <!-- Internal messages for responses -->
+    <string name="invalid_token_internal">invalid token</string>
+    <string name="timeout_internal">timeout</string>
+    <string name="success_internal">success</string>
+    <string name="not_sent_internal">not sent</string>
+
+    <!-- Log type identifiers -->
+    <string name="error_identifier">[ERROR]</string>
+    <string name="warn_identifier">[WARN</string>
+
+    <!-- Intent extra names -->
+    <string name="ipaddress_extra">ipAddress</string>
+    <string name="token_extra">token</string>
+    <string name="logout_extra">logout</string>
+
+    <!-- Message types -->
+    <string name="login_type">login</string>
+    <string name="request_logs_type">requestLogs</string>
+    <string name="open_type">open</string>
+    <string name="configure_keypad_type">keypadConfig</string>
+    <string name="add_otp_type">otpAdd</string>
+    <string name="remove_otp_type">otpRemove</string>
+    <string name="keep_logs_type">keepLogs</string>
+    <string name="change_pin_type">changePin</string>
+    <string name="global_logout_type">globalLogout</string>
+    <string name="reset_type">reset</string>
+
+    <!-- Toast messages -->
+    <string name="timeout_toast">Timeout! :c</string>
+    <string name="latest_log_toast">Showing latest stored log</string>
+    <string name="synced_logs_toast">Successfully synced logs</string>
+    <string name="log_out_toast">Logging out :C</string>
+
+
 </resources>

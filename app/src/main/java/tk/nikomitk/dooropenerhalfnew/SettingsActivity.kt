@@ -30,8 +30,8 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         setSupportActionBar(supportActBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        ipAddress = intent.getStringExtra("ipAddress")!!
-        token = intent.getStringExtra("token")!!
+        ipAddress = intent.getStringExtra(getString(R.string.ipaddress_extra))!!
+        token = intent.getStringExtra(getString(R.string.token_extra))!!
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             keepLogsPreference.setOnPreferenceChangeListener { _, newValue ->
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "keepLogs",
+                        type = getString(R.string.keep_logs_type),
                         token = token,
                         content = newValue.toString(),
                         ipAddress = ipAddress
@@ -58,7 +58,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
                     }
-                    if (response.internalMessage.lowercase().contains("invalid token")) {
+                    if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal))) {
                         logout()
                     }
                 }
@@ -69,7 +69,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             changePinPreference.setOnPreferenceChangeListener { _, newValue ->
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "changePin",
+                        type = getString(R.string.change_pin_type),
                         token = token,
                         content = newValue.toString(),
                         ipAddress = ipAddress
@@ -77,7 +77,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
                     }
-                    if (response.internalMessage.lowercase().contains("invalid token")) {
+                    if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal))) {
                         logout()
                     }
 
@@ -90,7 +90,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             globalLogoutButton.setOnPreferenceClickListener {
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "globalLogout",
+                        type = getString(R.string.global_logout_type),
                         token = token,
                         content = "",
                         ipAddress = ipAddress
@@ -99,8 +99,8 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
                     }
                     if (response.internalMessage.lowercase()
-                            .contains("invalid token") || response.internalMessage.lowercase()
-                            .contains("success")
+                            .contains(getString(R.string.invalid_token_internal)) || response.internalMessage.lowercase()
+                            .contains(getString(R.string.success_internal))
                     ) {
                         logout()
                     }
@@ -112,7 +112,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             resetButton.setOnPreferenceClickListener {
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "reset",
+                        type = getString(R.string.reset_type),
                         token = token,
                         content = "",
                         ipAddress = ipAddress
@@ -121,8 +121,8 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
                     }
                     if (response.internalMessage.lowercase()
-                            .contains("invalid token") || response.internalMessage.lowercase()
-                            .contains("success")
+                            .contains(getString(R.string.invalid_token_internal)) || response.internalMessage.lowercase()
+                            .contains(getString(R.string.success_internal))
                     ) {
                         logout()
                     }
@@ -132,7 +132,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             val logoutButton: Preference = findPreference("logoutButton")!!
             logoutButton.setOnPreferenceClickListener {
-                Toast.makeText(this.context, "Logging out :C", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context, getString(R.string.logout_extra), Toast.LENGTH_SHORT).show()
                 logout()
                 return@setOnPreferenceClickListener true
             }
@@ -140,7 +140,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         private fun logout() {
-            startActivity(Intent(this.context, LoginActivity::class.java).putExtra("logout", true))
+            startActivity(Intent(this.context, LoginActivity::class.java).putExtra(getString(R.string.logout_extra), true))
             OpenActivity.thisActivity.finish()
             requireActivity().finish()
         }

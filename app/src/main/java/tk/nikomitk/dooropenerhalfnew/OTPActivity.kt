@@ -48,7 +48,7 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     LocalDate.now().plusMonths(1).toString()
                 )
                 val response = sendMessage(
-                    type = "otpAdd",
+                    type = getString(R.string.add_otp_type),
                     token = storage.token!!,
                     content = Gson().toJson(newOtp),
                     ipAddress = storage.ipAddress!!
@@ -57,7 +57,7 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     Toast.makeText(
                         this@OTPActivity, response.text, Toast.LENGTH_SHORT
                     ).show()
-                    if (response.internalMessage == "success") {
+                    if (response.internalMessage == getString(R.string.success_internal)) {
                         storage.otps.add(
                             newOtp
                         )
@@ -72,14 +72,14 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     fun removeOtp(position: Int) {
         launch(Dispatchers.IO) {
             val response = sendMessage(
-                type = "otpRemove",
+                type = getString(R.string.remove_otp_type),
                 token = storage.token!!,
                 content = Gson().toJson(storage.otps[position]),
                 ipAddress = storage.ipAddress!!
             )
             runOnUiThread {
                 Toast.makeText(this@OTPActivity, response.text, Toast.LENGTH_SHORT).show()
-                if (response.internalMessage == "success") {
+                if (response.internalMessage == getString(R.string.success_internal)) {
                     storage.otps.removeAt(position)
                     adapter.notifyDataSetChanged()
                     storageFile.writeText(Gson().toJson(storage))

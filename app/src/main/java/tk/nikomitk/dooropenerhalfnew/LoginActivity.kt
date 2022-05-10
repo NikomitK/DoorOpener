@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         //TODO remember pin check etc, load ip address from storage, hash pin
         val storageFile: File = File(applicationContext.filesDir, "storageFile")
 
-        if (intent.getBooleanExtra("logout", false)) {
+        if (intent.getBooleanExtra(getString(R.string.logout_extra), false)) {
             storageFile.writeText("")
         }
 
@@ -42,8 +42,8 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         if (!storageFile.createNewFile() && storageFile.readText().contains(":")) {
             storage = Gson().fromJson(storageFile.readText(), Storage::class.java)
             val intent = Intent(this, OpenActivity::class.java).apply {
-                putExtra("ipAddress", storage.ipAddress)
-                putExtra("token", storage.token)
+                putExtra(getString(R.string.ipaddress_extra), storage.ipAddress)
+                putExtra(getString(R.string.token_extra), storage.token)
             }
             startActivity(intent)
             finish()
@@ -87,13 +87,13 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             var success: Boolean = false
             try {
                 tempSocket.connect(InetSocketAddress(ipAddress, port), 1500)
-                val message: String = Gson().toJson(LoginMessage("login", pin, newDevice))
+                val message: String = Gson().toJson(LoginMessage(getString(R.string.login_type), pin, newDevice))
                 PrintWriter(tempSocket.outputStream, true).println(message)
                 response = Gson().fromJson(
                     BufferedReader(InputStreamReader(tempSocket.inputStream)).readLine(),
                     Response::class.java
                 )
-                if (response.text.lowercase().contains("success")) {
+                if (response.text.lowercase().contains(getString(R.string.success_internal))) {
                     storage.ipAddress = ipAddress
                     if (rememberPassword) {
                         storage.pin = pin
@@ -105,17 +105,17 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             } catch (timeout: SocketTimeoutException) {
                 timeout.printStackTrace()
-                response = Response("Timeout! :c", "Not sent")
+                response = Response(getString(R.string.timeout_toast), getString(R.string.not_sent_internal))
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                response = Response(exception.message!!, "Not sent")
+                response = Response(exception.message!!, getString(R.string.not_sent_internal))
             }
             runOnUiThread {
                 Toast.makeText(this@LoginActivity, response.text, Toast.LENGTH_SHORT).show()
                 if (success) {
                     val intent = Intent(this@LoginActivity, OpenActivity::class.java).apply {
-                        putExtra("ipAddress", ipAddress)
-                        putExtra("token", response.internalMessage)
+                        putExtra(getString(R.string.ipaddress_extra), ipAddress)
+                        putExtra(getString(R.string.token_extra), response.internalMessage)
                     }
 
                     startActivity(intent)
