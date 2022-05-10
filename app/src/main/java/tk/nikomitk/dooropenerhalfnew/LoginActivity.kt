@@ -8,14 +8,16 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import tk.nikomitk.dooropenerhalfnew.messagetypes.LoginMessage
 import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.io.PrintWriter
-import java.lang.Exception
 import java.net.InetSocketAddress
 import java.net.SocketTimeoutException
 import javax.net.ssl.SSLSocket
@@ -31,7 +33,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         //TODO remember pin check etc, load ip address from storage, hash pin
         val storageFile: File = File(applicationContext.filesDir, "storageFile")
 
-        if(intent.getBooleanExtra("logout", false)){
+        if (intent.getBooleanExtra("logout", false)) {
             storageFile.writeText("")
         }
 
@@ -78,7 +80,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         storageFile: File
     ) {
         val port = 5687
-        launch (Dispatchers.IO) {
+        launch(Dispatchers.IO) {
             var response: Response
             val factory = SSLSocketFactory.getDefault()
             val tempSocket = factory.createSocket() as SSLSocket

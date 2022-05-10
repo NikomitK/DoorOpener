@@ -32,7 +32,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         token = intent.getStringExtra("token")!!
 
         val latestLogFile = File(applicationContext.filesDir, "latestLog.log")
-        if(latestLogFile.exists() && latestLogFile.readText().isNotEmpty()) {
+        if (latestLogFile.exists() && latestLogFile.readText().isNotEmpty()) {
             logArray = Gson().fromJson(latestLogFile.readText(), Array<String>::class.java)
             adapter = LogAdapter(logArray)
             val recyclerView: RecyclerView = findViewById(R.id.logRecyclerView)
@@ -81,7 +81,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    if(response.internalMessage == "invalid token") {
+                    if (response.internalMessage == "invalid token") {
                         logout()
                     }
                 }

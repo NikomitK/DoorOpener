@@ -8,12 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import java.io.File
 
-class CustomAdapter(private val dataSet: ArrayList<Otp>, private val otpActivity: OTPActivity) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class CustomAdapter(private val dataSet: ArrayList<Otp>, private val otpActivity: OTPActivity) :
+    RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val otpText: TextView = view.findViewById(R.id.otpText)
@@ -37,7 +35,8 @@ class CustomAdapter(private val dataSet: ArrayList<Otp>, private val otpActivity
         }
         holder.copyButton.setOnClickListener {
             (otpActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(
-                ClipData.newPlainText("text", holder.otpText.text.toString()))
+                ClipData.newPlainText("text", holder.otpText.text.toString())
+            )
         }
     }
 
