@@ -8,27 +8,28 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import tk.nikomitk.dooropenerhalfnew.messagetypes.LoginMessage
 import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.io.PrintWriter
+import java.lang.Exception
 import java.net.InetSocketAddress
-import java.net.Socket
 import java.net.SocketTimeoutException
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
 
 // please don't question my use of expression marks at the end of every displayed string :)
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //TODO remember pin check etc, load ip address from storage, hash pin
-        var storageFile: File = File(applicationContext.filesDir, "storageFile")
+        val storageFile: File = File(applicationContext.filesDir, "storageFile")
 
         if(intent.getBooleanExtra("logout", false)){
             storageFile.writeText("")
@@ -77,16 +78,17 @@ class LoginActivity : AppCompatActivity() {
         storageFile: File
     ) {
         val port = 5687
-        GlobalScope.launch {
+        launch (Dispatchers.IO) {
             var response: Response
-            val tempSocket = Socket()
+            val factory = SSLSocketFactory.getDefault()
+            val tempSocket = factory.createSocket() as SSLSocket
             var success: Boolean = false
             try {
                 tempSocket.connect(InetSocketAddress(ipAddress, port), 1500)
                 val message: String = Gson().toJson(LoginMessage("login", pin, newDevice))
-                PrintWriter(tempSocket.getOutputStream(), true).println(message)
+                PrintWriter(tempSocket.outputStream, true).println(message)
                 response = Gson().fromJson(
-                    BufferedReader(InputStreamReader(tempSocket.getInputStream())).readLine(),
+                    BufferedReader(InputStreamReader(tempSocket.inputStream)).readLine(),
                     Response::class.java
                 )
                 if (response.text.lowercase().contains("success")) {
@@ -96,12 +98,15 @@ class LoginActivity : AppCompatActivity() {
                         storage.token = response.internalMessage
                         storageFile.writeText(Gson().toJson(storage))
                     }
-                    // TODO handle other cases (token expired,)
                     success = true
                 }
 
             } catch (timeout: SocketTimeoutException) {
+                timeout.printStackTrace()
                 response = Response("Timeout! :c", "Not sent")
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+                response = Response(exception.message!!, "Not sent")
             }
             runOnUiThread {
                 Toast.makeText(this@LoginActivity, response.text, Toast.LENGTH_SHORT).show()
