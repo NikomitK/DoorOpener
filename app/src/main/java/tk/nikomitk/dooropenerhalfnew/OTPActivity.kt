@@ -3,6 +3,7 @@ package tk.nikomitk.dooropenerhalfnew
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -12,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
+import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
+import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
@@ -26,8 +29,8 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_otpactivity)
-        val supportActBar:
-                androidx.appcompat.widget.Toolbar = findViewById(R.id.my_toolbar)
+
+        val supportActBar: Toolbar = findViewById(R.id.my_toolbar)
         setSupportActionBar(supportActBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -48,9 +51,11 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     LocalDate.now().plusMonths(1).toString()
                 )
                 val response = sendMessage(
-                    type = getString(R.string.add_otp_type),
-                    token = storage.token!!,
-                    content = Gson().toJson(newOtp),
+                    message = Message(
+                        type = getString(R.string.add_otp_type),
+                        token = storage.token!!,
+                        content = Gson().toJson(newOtp)
+                    ).toJson(),
                     ipAddress = storage.ipAddress!!
                 )
                 runOnUiThread {
@@ -72,9 +77,11 @@ class OTPActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     fun removeOtp(position: Int) {
         launch(Dispatchers.IO) {
             val response = sendMessage(
-                type = getString(R.string.remove_otp_type),
-                token = storage.token!!,
-                content = Gson().toJson(storage.otps[position]),
+                message = Message(
+                    type = getString(R.string.remove_otp_type),
+                    token = storage.token!!,
+                    content = Gson().toJson(storage.otps[position])
+                ).toJson(),
                 ipAddress = storage.ipAddress!!
             )
             runOnUiThread {

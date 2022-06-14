@@ -20,6 +20,7 @@
     <!-- Preference Titles -->
     <string name="logs_header">Logs</string>
     <string name="administration_header">Administration</string>
+    <string name="other_header">Other</string>
     <string name="logout_header">Logout</string>
 
     <!-- Administration Preferences -->
@@ -31,11 +32,14 @@
     <string name="logout_title">Logout</string>
     <string name="logout_summary">Logs you out of this app</string>
 
-
     <!-- Logs Preferences -->
     <string name="sync_title">Sync logs automatically</string>
     <string name="sync_summary">Sync the logs automatically when you are opening the door etc</string>
     <string name="keepLogs_title">Keep logs</string>
+
+    <!-- Other Preferences -->
+    <string name="tls_title">Use TLS</string>
+    <string name="tls_summary">Encrypt the communication via TLS</string>
 
     <!-- Action Menu Titles -->
     <string name="settings_title">Settings</string>
@@ -69,6 +73,7 @@
     <string name="change_pin_type">changePin</string>
     <string name="global_logout_type">globalLogout</string>
     <string name="reset_type">reset</string>
+    <string name="tls_type">useTLs</string>
 
     <!-- Toast messages -->
     <string name="timeout_toast">Timeout! :c</string>

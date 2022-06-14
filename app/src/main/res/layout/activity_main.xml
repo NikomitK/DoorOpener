@@ -66,19 +66,21 @@
         android:id="@+id/checkBoxNewDevice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:text="New Device"
-        app:layout_constraintStart_toStartOf="@+id/editTextPin"
+        app:layout_constraintStart_toEndOf="@+id/checkBoxRememberPassword"
         app:layout_constraintTop_toBottomOf="@+id/editTextPin" />
 
     <CheckBox
         android:id="@+id/checkBoxRememberPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="-16dp"
         android:layout_marginTop="32dp"
         android:checked="true"
         android:text="Remember Pin"
-        app:layout_constraintStart_toEndOf="@+id/checkBoxNewDevice"
+        app:layout_constraintStart_toStartOf="@+id/editTextPin"
         app:layout_constraintTop_toBottomOf="@+id/editTextPin" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

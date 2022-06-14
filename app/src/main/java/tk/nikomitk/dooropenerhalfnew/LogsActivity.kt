@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.thekhaeng.recyclerviewmargin.LinearLayoutMargin
 import kotlinx.coroutines.*
+import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
+import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
 import java.io.File
 
 class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -34,7 +36,7 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val latestLogFile = File(applicationContext.filesDir, "latestLog.log")
         if (latestLogFile.exists() && latestLogFile.readText().isNotEmpty()) {
             logArray = Gson().fromJson(latestLogFile.readText(), Array<String>::class.java)
-            adapter = LogAdapter(logArray)
+            adapter = LogAdapter(logArray.reversedArray())
             val recyclerView: RecyclerView = findViewById(R.id.logRecyclerView)
             recyclerView.layoutManager = LinearLayoutManager(this@LogsActivity)
             recyclerView.adapter = adapter
@@ -53,16 +55,16 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         R.id.action_sync -> {
             launch(Dispatchers.IO) {
                 val response = NetworkUtil.sendMessage(
-                    type = getString(R.string.request_logs_type),
+                    message = Message(type = getString(R.string.request_logs_type),
                     token = token,
-                    content = "",
+                    content = "").toJson(),
                     ipAddress = ipAddress
                 )
                 if (response.internalMessage == getString(R.string.success_internal)) {
                     File(applicationContext.filesDir, "latestLog.log").writeText(response.text)
                     runOnUiThread {
                         logArray = Gson().fromJson(response.text, Array<String>::class.java)
-                        adapter = LogAdapter(logArray)
+                        adapter = LogAdapter(logArray.reversedArray())
                         val recyclerView: RecyclerView = findViewById(R.id.logRecyclerView)
                         recyclerView.layoutManager = LinearLayoutManager(this@LogsActivity)
                         recyclerView.adapter = adapter

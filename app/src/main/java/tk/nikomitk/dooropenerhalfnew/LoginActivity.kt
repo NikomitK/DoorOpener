@@ -7,46 +7,36 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
 import tk.nikomitk.dooropenerhalfnew.messagetypes.LoginMessage
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
-import java.io.BufferedReader
+import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
 import java.io.File
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.net.InetSocketAddress
-import java.net.SocketTimeoutException
-import javax.net.ssl.SSLSocket
-import javax.net.ssl.SSLSocketFactory
-
-// please don't question my use of expression marks at the end of every displayed string :)
 
 class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+    //TODO add otp option
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //TODO remember pin check etc, load ip address from storage, hash pin
-        val storageFile: File = File(applicationContext.filesDir, "storageFile")
+        //TODO hash pin
+        val storageFile = File(applicationContext.filesDir, "storageFile")
 
         if (intent.getBooleanExtra(getString(R.string.logout_extra), false)) {
             storageFile.writeText("")
         }
 
-        var storage: Storage = Storage()
+        var storage = Storage()
 
         if (!storageFile.createNewFile() && storageFile.readText().contains(":")) {
-            storage = Gson().fromJson(storageFile.readText(), Storage::class.java)
-            val intent = Intent(this, OpenActivity::class.java).apply {
-                putExtra(getString(R.string.ipaddress_extra), storage.ipAddress)
-                putExtra(getString(R.string.token_extra), storage.token)
-            }
-            startActivity(intent)
-            finish()
+            storage = storageFile.readText().toStorage()
+            startNextActivity(
+                ipAddress = storage.ipAddress,
+                token = storage.token,
+            )
         }
 
 
@@ -58,71 +48,49 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
 
         buttonLogin.setOnClickListener {
-            sendLoginMessage(
-                ipAddress = textAddress.text.toString(),
-                pin = Integer.parseInt(textPin.text.toString()),
-                storage = storage,
-                rememberPassword = checkBoxRememberPassword.isChecked,
-                newDevice = checkBoxNewDevice.isChecked,
-                storageFile = storageFile
-            )
+            var success = false
+            val ipAddress = textAddress.text.toString()
+            launch(Dispatchers.IO) {
+                val response = sendMessage(
+                    ipAddress = ipAddress,
+                    message = LoginMessage(
+                        type = "login",
+                        pin = Integer.parseInt(textPin.text.toString()),
+                        isNewDevice = checkBoxNewDevice.isChecked
+                    ).toJson()
+                )
+                if (response.text.lowercase().contains(getString(R.string.success_internal))) {
+                    storage.ipAddress = ipAddress
+                    if (checkBoxRememberPassword.isChecked) {
+                        storage.pin = Integer.parseInt(textPin.text.toString())
+                        storage.token = response.internalMessage
+                        storageFile.writeText(storage.toJson())
+                    }
+                    success = true
+                }
+                runOnUiThread {
+                    Toast.makeText(this@LoginActivity, response.text, Toast.LENGTH_SHORT)
+                        .show()
+                    if (success) {
+                        startNextActivity(
+                            ipAddress = ipAddress,
+                            token = response.internalMessage,
+                        )
+                    }
+                }
+            }
 
         }
 
     }
 
-    private fun sendLoginMessage(
-        ipAddress: String,
-        pin: Int,
-        storage: Storage,
-        newDevice: Boolean,
-        rememberPassword: Boolean,
-        storageFile: File
-    ) {
-        val port = 5687
-        launch(Dispatchers.IO) {
-            var response: Response
-            val factory = SSLSocketFactory.getDefault()
-            val tempSocket = factory.createSocket() as SSLSocket
-            var success: Boolean = false
-            try {
-                tempSocket.connect(InetSocketAddress(ipAddress, port), 1500)
-                val message: String = Gson().toJson(LoginMessage(getString(R.string.login_type), pin, newDevice))
-                PrintWriter(tempSocket.outputStream, true).println(message)
-                response = Gson().fromJson(
-                    BufferedReader(InputStreamReader(tempSocket.inputStream)).readLine(),
-                    Response::class.java
-                )
-                if (response.text.lowercase().contains(getString(R.string.success_internal))) {
-                    storage.ipAddress = ipAddress
-                    if (rememberPassword) {
-                        storage.pin = pin
-                        storage.token = response.internalMessage
-                        storageFile.writeText(Gson().toJson(storage))
-                    }
-                    success = true
-                }
-
-            } catch (timeout: SocketTimeoutException) {
-                timeout.printStackTrace()
-                response = Response(getString(R.string.timeout_toast), getString(R.string.not_sent_internal))
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                response = Response(exception.message!!, getString(R.string.not_sent_internal))
-            }
-            runOnUiThread {
-                Toast.makeText(this@LoginActivity, response.text, Toast.LENGTH_SHORT).show()
-                if (success) {
-                    val intent = Intent(this@LoginActivity, OpenActivity::class.java).apply {
-                        putExtra(getString(R.string.ipaddress_extra), ipAddress)
-                        putExtra(getString(R.string.token_extra), response.internalMessage)
-                    }
-
-                    startActivity(intent)
-                    finish()
-                }
-            }
+    private fun startNextActivity(ipAddress: String?, token: String?) {
+        val intent = Intent(this@LoginActivity, OpenActivity::class.java).apply {
+            putExtra(getString(R.string.ipaddress_extra), ipAddress)
+            putExtra(getString(R.string.token_extra), token)
         }
+        startActivity(intent)
+        finish()
     }
 
 }
