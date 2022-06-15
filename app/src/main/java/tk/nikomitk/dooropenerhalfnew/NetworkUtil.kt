@@ -47,7 +47,7 @@ object NetworkUtil {
             }
         }
         return test.await().takeUnless {
-            it.text.isNullOrBlank()
+            it.text.isBlank()
         } ?: Response("Invalid response", "invalid response")
     }
 
