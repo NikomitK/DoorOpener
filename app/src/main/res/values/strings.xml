@@ -52,6 +52,7 @@
     <string name="timeout_internal">timeout</string>
     <string name="success_internal">success</string>
     <string name="not_sent_internal">not sent</string>
+    <string name="invalid_response_internal">invalid response</string>
 
     <!-- Log type identifiers -->
     <string name="error_identifier">[ERROR]</string>
@@ -66,6 +67,7 @@
     <string name="login_type">login</string>
     <string name="request_logs_type">requestLogs</string>
     <string name="open_type">open</string>
+    <string name="otp_open_type">otpOpen</string>
     <string name="configure_keypad_type">keypadConfig</string>
     <string name="add_otp_type">otpAdd</string>
     <string name="remove_otp_type">otpRemove</string>
