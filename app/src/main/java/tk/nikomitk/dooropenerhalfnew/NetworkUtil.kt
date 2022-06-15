@@ -46,7 +46,9 @@ object NetworkUtil {
                 }
             }
         }
-        return test.await()
+        return test.await().takeUnless {
+            it.text.isNullOrBlank()
+        } ?: Response("Invalid response", "invalid response")
     }
 
     suspend fun sendLoginMessage(
