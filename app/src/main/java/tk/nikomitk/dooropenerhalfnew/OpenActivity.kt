@@ -89,7 +89,7 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
                         message = Message(
-                            type = getString(R.string.open_type),
+                            type = getString(R.string.otp_open_type),
                             token = otpPinText.text.toString(),
                             content = openTimeTextView.text.toString()
                         ).toJson(),
@@ -97,10 +97,10 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     )
                     runOnUiThread {
                         Toast.makeText(this@OpenActivity, response.text, Toast.LENGTH_SHORT).show()
+                        if (response.internalMessage == getString(R.string.success_internal)) otpPinText.setText(
+                            ""
+                        )
                     }
-                    if (response.internalMessage == getString(R.string.success_internal)) otpPinText.setText(
-                        ""
-                    )
                 }
             }
         }
