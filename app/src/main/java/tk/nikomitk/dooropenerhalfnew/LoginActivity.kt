@@ -1,96 +1,54 @@
 package tk.nikomitk.dooropenerhalfnew
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
-import tk.nikomitk.dooropenerhalfnew.messagetypes.LoginMessage
-import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
-import java.io.File
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import android.view.Menu
+import android.view.MenuItem
+import tk.nikomitk.dooropenerhalfnew.databinding.ActivityMainBinding
 
-class LoginActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    //TODO add otp option
+class LoginActivity : AppCompatActivity() {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        //TODO hash pin
-        val storageFile = File(applicationContext.filesDir, "storageFile")
 
-        if (intent.getBooleanExtra(getString(R.string.logout_extra), false)) {
-            storageFile.writeText("")
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        var storage = Storage()
+        setSupportActionBar(binding.toolbar)
 
-        if (!storageFile.createNewFile() && storageFile.readText().contains(":")) {
-            storage = storageFile.readText().toStorage()
-            startNextActivity(
-                ipAddress = storage.ipAddress,
-                token = storage.token,
-            )
-        }
-
-
-        val textAddress: EditText = findViewById(R.id.editTextAddress)
-        val textPin: EditText = findViewById(R.id.editTextPin)
-        val checkBoxNewDevice: CheckBox = findViewById(R.id.checkBoxNewDevice)
-        val checkBoxRememberPassword: CheckBox = findViewById(R.id.checkBoxRememberPassword)
-
-        val buttonLogin: Button = findViewById(R.id.buttonLogin)
-
-        buttonLogin.setOnClickListener {
-            var success = false
-            val ipAddress = textAddress.text.toString()
-            launch(Dispatchers.IO) {
-                val response = sendMessage(
-                    ipAddress = ipAddress,
-                    message = LoginMessage(
-                        type = "login",
-                        pin = Integer.parseInt(textPin.text.toString()),
-                        isNewDevice = checkBoxNewDevice.isChecked
-                    ).toJson()
-                )
-                if (response.text.lowercase().contains(getString(R.string.success_internal))) {
-                    storage.ipAddress = ipAddress
-                    if (checkBoxRememberPassword.isChecked) {
-                        storage.pin = Integer.parseInt(textPin.text.toString())
-                        storage.token = response.internalMessage
-                        storageFile.writeText(storage.toJson())
-                    }
-                    success = true
-                }
-                runOnUiThread {
-                    Toast.makeText(this@LoginActivity, response.text, Toast.LENGTH_SHORT)
-                        .show()
-                    if (success) {
-                        startNextActivity(
-                            ipAddress = ipAddress,
-                            token = response.internalMessage,
-                        )
-                    }
-                }
-            }
-
-        }
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
     }
 
-    private fun startNextActivity(ipAddress: String?, token: String?) {
-        val intent = Intent(this@LoginActivity, OpenActivity::class.java).apply {
-            putExtra(getString(R.string.ipaddress_extra), ipAddress)
-            putExtra(getString(R.string.token_extra), token)
-        }
-        startActivity(intent)
-        finish()
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
+    }
 }
