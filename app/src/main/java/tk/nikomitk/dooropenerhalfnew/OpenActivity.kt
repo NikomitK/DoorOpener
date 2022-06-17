@@ -17,7 +17,7 @@ import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
 import java.io.File
 
 class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-
+    //TODO make scrollable for smaller phones
     companion object {
         lateinit var globalIpAddress: String
         lateinit var globalToken: String
