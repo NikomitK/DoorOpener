@@ -15,10 +15,6 @@
         <service
             android:name=".WidgetNetworkService"
             android:enabled="true"
-            android:exported="true"></service>
-
-        <activity
-            android:name=".TestWIdgetActivity"
             android:exported="false" />
 
         <receiver
