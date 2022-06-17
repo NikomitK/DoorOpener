@@ -3,9 +3,9 @@
     android:description="@string/app_widget_description"
     android:initialKeyguardLayout="@layout/open_widget"
     android:initialLayout="@layout/open_widget"
-    android:minWidth="40dp"
+    android:minWidth="110dp"
     android:minHeight="40dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/widget_preview"
 
     android:previewLayout="@layout/open_widget"
     android:targetCellWidth="2"
