@@ -6,10 +6,14 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import kotlinx.coroutines.runBlocking
+import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
+import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
+import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
+import java.io.File
 
-/**
- * Implementation of App Widget functionality.
- */
+const val ACTION_OPEN = "tk.nikomitk.dooropenerhalfnew.OPEN"
+
 class OpenWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -29,6 +33,26 @@ class OpenWidget : AppWidgetProvider() {
     override fun onDisabled(context: Context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        //if the intent contains this string, the received broadcast is relevant for this action
+        if (intent!!.action == ACTION_OPEN) {
+            val response: Response
+            runBlocking {
+                val storage = File(context!!.filesDir, "storageFile").readText().toStorage()
+                response = NetworkUtil.sendMessage(
+                    Message(
+                        "open",
+                        storage.token!!,
+                        "1"
+                    ).toJson(),
+                    storage.ipAddress!!
+                )
+            }
+            response.text.toast(context!!)
+        }
+        super.onReceive(context, intent)
+    }
 }
 
 internal fun updateAppWidget(
@@ -36,28 +60,18 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-    val widgetText = context.getString(R.string.appwidget_text)
-    // Construct the RemoteViews object
 
-//    val pendingIntent: PendingIntent = PendingIntent.getActivity(
-//        /* context = */ context,
-//        /* requestCode = */  0,
-//        /* intent = */ Intent(context, WidgetNetworkService::class.java).apply {
-//
-//        },
-//        /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//    )
-    val pendingIntent = PendingIntent.getService(
+    // Broadcast an intent with the ACTION_OPEN string, so the receiver can do it's work
+    val intent = Intent(context, OpenWidget::class.java)
+    intent.action = ACTION_OPEN
+    val pendingIntent = PendingIntent.getBroadcast(
         context,
         0,
-        Intent(context, WidgetNetworkService::class.java).also {
-            context.startService(it)},
+        intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     val views = RemoteViews(context.packageName, R.layout.open_widget)
-//    views.setTextViewText(R.id.appwidget_text, widgetText)
     views.setOnClickPendingIntent(R.id.widgetButton, pendingIntent)
-    // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
