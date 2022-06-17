@@ -13,9 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import tk.nikomitk.dooropenerhalfnew.NetworkUtil.sendMessage
+import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
+import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
 
 class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
-    //TODO turn logout preference red, delete otps
+    //TODO turn logout preference red
 
     companion object {
         lateinit var ipAddress: String
@@ -25,13 +27,11 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
-        val supportActBar:
-                androidx.appcompat.widget.Toolbar = findViewById(R.id.my_toolbar)
-        setSupportActionBar(supportActBar)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        ipAddress = intent.getStringExtra("ipAddress")!!
-        token = intent.getStringExtra("token")!!
+        ipAddress = intent.getStringExtra(getString(R.string.ipaddress_extra))!!
+        token = intent.getStringExtra(getString(R.string.token_extra))!!
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -39,7 +39,6 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
         }
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
@@ -51,15 +50,19 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             keepLogsPreference.setOnPreferenceChangeListener { _, newValue ->
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "keepLogs",
-                        token = token,
-                        content = newValue.toString(),
+                        message = Message(
+                            type = getString(R.string.keep_logs_type),
+                            token = token,
+                            content = newValue.toString()
+                        ).toJson(),
                         ipAddress = ipAddress
                     )
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
+                        response.text.toast(requireContext())
                     }
-                    if (response.internalMessage.lowercase().contains("invalid token")) {
+                    if (response.internalMessage.lowercase()
+                            .contains(getString(R.string.invalid_token_internal))
+                    ) {
                         logout()
                     }
                 }
@@ -70,38 +73,42 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             changePinPreference.setOnPreferenceChangeListener { _, newValue ->
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "changePin",
-                        token = token,
-                        content = newValue.toString(),
+                        message = Message(
+                            type = getString(R.string.change_pin_type),
+                            token = token,
+                            content = newValue.toString()
+                        ).toJson(),
                         ipAddress = ipAddress
                     )
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
+                        response.text.toast(requireContext())
                     }
-                    if (response.internalMessage.lowercase().contains("invalid token")) {
+                    if (response.internalMessage.lowercase()
+                            .contains(getString(R.string.invalid_token_internal))
+                    ) {
                         logout()
                     }
-
                 }
                 true
-
             }
 
             val globalLogoutButton: Preference = findPreference("resetLogins")!!
             globalLogoutButton.setOnPreferenceClickListener {
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "globalLogout",
-                        token = token,
-                        content = "",
+                        message = Message(
+                            type = getString(R.string.global_logout_type),
+                            token = token,
+                            content = ""
+                        ).toJson(),
                         ipAddress = ipAddress
                     )
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
+                        response.text.toast(requireContext())
                     }
                     if (response.internalMessage.lowercase()
-                            .contains("invalid token") || response.internalMessage.lowercase()
-                            .contains("success")
+                            .contains(getString(R.string.invalid_token_internal)) || response.internalMessage.lowercase()
+                            .contains(getString(R.string.success_internal))
                     ) {
                         logout()
                     }
@@ -109,22 +116,44 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 true
             }
 
-            val resetButton: Preference = findPreference("resetDeviceButton")!!
+            val resetButton: Preference = findPreference("resetDevice")!!
             resetButton.setOnPreferenceClickListener {
                 launch(Dispatchers.IO) {
                     val response = sendMessage(
-                        type = "reset",
-                        token = token,
-                        content = "",
+                        message = Message(
+                            type = getString(R.string.reset_type),
+                            token = token,
+                            content = ""
+                        ).toJson(),
                         ipAddress = ipAddress
                     )
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), response.text, Toast.LENGTH_SHORT).show()
+                        response.text.toast(requireContext())
                     }
-                    if (response.internalMessage.lowercase()
-                            .contains("invalid token") || response.internalMessage.lowercase()
-                            .contains("success")
+                    if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal)) ||
+                        response.internalMessage.lowercase().contains(getString(R.string.success_internal))
                     ) {
+                        logout()
+                    }
+                }
+                true
+            }
+
+            val tlsSwitch: SwitchPreferenceCompat = findPreference("useTls")!!
+            tlsSwitch.setOnPreferenceChangeListener { _, newValue ->
+                launch(Dispatchers.IO) {
+                    val response = sendMessage(
+                        message = Message(
+                            type = getString(R.string.tls_type),
+                            token = token,
+                            content = (newValue as Boolean).toString()
+                        ).toJson(),
+                        ipAddress = ipAddress
+                    )
+                    requireActivity().runOnUiThread {
+                        response.text.toast(requireContext())
+                    }
+                    if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal))) {
                         logout()
                     }
                 }
@@ -133,7 +162,7 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
             val logoutButton: Preference = findPreference("logoutButton")!!
             logoutButton.setOnPreferenceClickListener {
-                Toast.makeText(this.context, "Logging out :C", Toast.LENGTH_SHORT).show()
+                getString(R.string.logout_extra).toast(requireContext())
                 logout()
                 return@setOnPreferenceClickListener true
             }
@@ -141,7 +170,12 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         private fun logout() {
-            startActivity(Intent(this.context, LoginActivity::class.java).putExtra("logout", true))
+            startActivity(
+                Intent(
+                    this.context,
+                    LoginActivity::class.java
+                ).putExtra(getString(R.string.logout_extra), true)
+            )
             OpenActivity.thisActivity.finish()
             requireActivity().finish()
         }

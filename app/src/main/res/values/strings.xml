@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">DoorOpenerHalfNew</string>
     <string name="title_activity_open">OpenActivity</string>
+
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="first_fragment_label">Login</string>
+    <string name="second_fragment_label">OTPs</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -19,6 +20,7 @@
     <!-- Preference Titles -->
     <string name="logs_header">Logs</string>
     <string name="administration_header">Administration</string>
+    <string name="other_header">Other</string>
     <string name="logout_header">Logout</string>
 
     <!-- Administration Preferences -->
@@ -30,15 +32,61 @@
     <string name="logout_title">Logout</string>
     <string name="logout_summary">Logs you out of this app</string>
 
-
     <!-- Logs Preferences -->
     <string name="sync_title">Sync logs automatically</string>
     <string name="sync_summary">Sync the logs automatically when you are opening the door etc</string>
     <string name="keepLogs_title">Keep logs</string>
+
+    <!-- Other Preferences -->
+    <string name="tls_title">Use TLS</string>
+    <string name="tls_summary">Encrypt the communication via TLS</string>
 
     <!-- Action Menu Titles -->
     <string name="settings_title">Settings</string>
     <string name="logs_title">Logs</string>
     <string name="otp_title">OTPs</string>
     <string name="title_activity_logs">LogsActivity</string>
+
+    <!-- Internal messages for responses -->
+    <string name="invalid_token_internal">invalid token</string>
+    <string name="timeout_internal">timeout</string>
+    <string name="success_internal">success</string>
+    <string name="not_sent_internal">not sent</string>
+    <string name="invalid_response_internal">invalid response</string>
+
+    <!-- Log type identifiers -->
+    <string name="error_identifier">[ERROR]</string>
+    <string name="warn_identifier">[WARN</string>
+
+    <!-- Intent extra names -->
+    <string name="ipaddress_extra">ipAddress</string>
+    <string name="token_extra">token</string>
+    <string name="logout_extra">logout</string>
+
+    <!-- Message types -->
+    <string name="login_type">login</string>
+    <string name="request_logs_type">requestLogs</string>
+    <string name="open_type">open</string>
+    <string name="otp_open_type">otpOpen</string>
+    <string name="configure_keypad_type">keypadConfig</string>
+    <string name="add_otp_type">otpAdd</string>
+    <string name="remove_otp_type">otpRemove</string>
+    <string name="keep_logs_type">keepLogs</string>
+    <string name="change_pin_type">changePin</string>
+    <string name="global_logout_type">globalLogout</string>
+    <string name="reset_type">reset</string>
+    <string name="tls_type">useTLs</string>
+
+    <!-- Toast messages -->
+    <string name="timeout_toast">Timeout! :c</string>
+    <string name="latest_log_toast">Showing latest stored log</string>
+    <string name="synced_logs_toast">Successfully synced logs</string>
+    <string name="log_out_toast">Logging out :C</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appwidget_text">OPEN</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+
+
 </resources>

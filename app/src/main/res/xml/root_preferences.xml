@@ -1,16 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="@string/logs_header">
-
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="keepLogs"
             app:title="@string/keepLogs_title" />
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/administration_header">
-
         <EditTextPreference
             android:key="changePin"
             android:selectAllOnFocus="true"
@@ -23,19 +20,25 @@
             android:title="@string/globalLogout_title"/>
 
         <Preference
-            android:key="resetDeviceButton"
+            android:key="resetDevice"
             android:summary="@string/reset_summary"
             android:title="@string/reset_title"/>
+    </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/other_header">
+        <SwitchPreferenceCompat
+            android:key="useTls"
+            android:summary="@string/tls_summary"
+            android:title="@string/tls_title"
+            android:defaultValue="false"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/logout_header">
-
         <Preference
             android:key="logoutButton"
             android:summary="@string/logout_summary"
             android:title="@string/logout_title"/>
-
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -5,38 +5,61 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
 import tk.nikomitk.dooropenerhalfnew.messagetypes.Response
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
-import java.lang.Exception
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketTimeoutException
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
 
 object NetworkUtil {
+
     suspend fun sendMessage(
-        type: String,
-        token: String,
-        content: String,
+        message: String,
         ipAddress: String
     ): Response {
-        val message = Message(type, token, content)
         val test: Deferred<Response> = coroutineScope {
-            async (Dispatchers.IO) {
-                val socket = Socket()
-                try{
-                    socket.connect(InetSocketAddress(ipAddress, 5687), 1500)
-                    PrintWriter(socket.getOutputStream(), true).println(Gson().toJson(message))
-                    return@async Gson().fromJson(
-                        BufferedReader(InputStreamReader(socket.getInputStream())).readLine(),
-                        Response::class.java
-                    )
-                } catch (exception: Exception) {
-                    return@async Response("Timeout :c", "timeout")
+            async(Dispatchers.IO) {
+                return@async sendTLsMessage(message, ipAddress) ?: run {
+                    val socket = Socket()
+                    try {
+                        socket.connect(InetSocketAddress(ipAddress, 5687), 1500)
+                        PrintWriter(socket.outputStream, true).println(message)
+                        return@async Gson().fromJson(
+                            BufferedReader(InputStreamReader(socket.inputStream)).readLine(),
+                            Response::class.java
+                        )
+                    } catch (timeout: SocketTimeoutException) {
+                        return@async Response("Timeout :c", "timeout")
+                    } catch (exception: java.lang.Exception) {
+                        exception.printStackTrace()
+                        return@async Response(exception.message!!, "Not sent")
+                    }
                 }
             }
         }
-        return test.await()
+        return test.await().takeUnless {
+            it.text.isBlank()
+        } ?: Response("Invalid response", "invalid response")
     }
+
+    private fun sendTLsMessage(message: String, ipAddress: String): Response? {
+        return try {
+            val socket = SSLSocketFactory.getDefault().createSocket() as SSLSocket
+            socket.connect(InetSocketAddress(ipAddress, 5688), 1000)
+            socket.soTimeout = 1000
+            PrintWriter(socket.outputStream, true).println(message)
+            Gson().fromJson(
+                BufferedReader(InputStreamReader(socket.inputStream)).readLine(),
+                Response::class.java
+            )
+
+        } catch (exception: Exception) {
+            null
+        }
+    }
+
 }
