@@ -58,9 +58,11 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 (p0!!.progress + 1).toString().also { openTimeTextView.text = it }
             }
 
-            override fun onStartTrackingTouch(p0: SeekBar?) { /* not needed */ }
+            override fun onStartTrackingTouch(p0: SeekBar?) { /* not needed */
+            }
 
-            override fun onStopTrackingTouch(p0: SeekBar?) { /* not needed */ }
+            override fun onStopTrackingTouch(p0: SeekBar?) { /* not needed */
+            }
         })
 
         openButton.setOnClickListener {
@@ -155,7 +157,6 @@ class OpenActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.resource_menu, menu)
-
         return true
     }
 

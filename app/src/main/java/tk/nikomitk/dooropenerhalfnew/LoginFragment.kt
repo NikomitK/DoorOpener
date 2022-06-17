@@ -2,14 +2,13 @@ package tk.nikomitk.dooropenerhalfnew
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,14 +24,12 @@ class LoginFragment : Fragment(), CoroutineScope by MainScope() {
 
     private var _binding: FragmentFirstBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
@@ -46,7 +43,7 @@ class LoginFragment : Fragment(), CoroutineScope by MainScope() {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
-        val storageFile = File(requireActivity().applicationContext.filesDir, "storageFile")
+        val storageFile = File(filesDir(), "storageFile")
 
         if (requireActivity().intent.getBooleanExtra(getString(R.string.logout_extra), false)) {
             storageFile.writeText("")
@@ -68,41 +65,40 @@ class LoginFragment : Fragment(), CoroutineScope by MainScope() {
         val checkBoxNewDevice: CheckBox = binding.checkBoxNewDevice
         val checkBoxRememberPassword: CheckBox = binding.checkBoxRememberPassword
 
-        val buttonLogin: Button = binding.buttonLogin
+        binding.buttonLogin.apply {
+            setOnClickListener {
+                var success = false
+                val ipAddress = textAddress.text.toString()
+                launch(Dispatchers.IO) {
+                    val response = sendMessage(
+                        ipAddress = ipAddress,
+                        message = LoginMessage(
+                            type = "login",
+                            pin = Integer.parseInt(textPin.text.toString()),
+                            isNewDevice = checkBoxNewDevice.isChecked
+                        ).toJson()
+                    )
+                    if (response.text.lowercase().contains(getString(R.string.success_internal))) {
+                        storage.ipAddress = ipAddress
+                        if (checkBoxRememberPassword.isChecked) {
+                            storage.pin = Integer.parseInt(textPin.text.toString())
+                            storage.token = response.internalMessage
+                            storageFile.writeText(storage.toJson())
+                        }
+                        success = true
+                    }
+                    requireActivity().runOnUiThread {
+                        response.text.toast(requireContext())
+                        if (success) {
+                            startNextActivity(
+                                ipAddress = ipAddress,
+                                token = response.internalMessage,
+                            )
+                        }
+                    }
+                }
 
-        buttonLogin.setOnClickListener {
-            var success = false
-            val ipAddress = textAddress.text.toString()
-            launch(Dispatchers.IO) {
-                val response = sendMessage(
-                    ipAddress = ipAddress,
-                    message = LoginMessage(
-                        type = "login",
-                        pin = Integer.parseInt(textPin.text.toString()),
-                        isNewDevice = checkBoxNewDevice.isChecked
-                    ).toJson()
-                )
-                if (response.text.lowercase().contains(getString(R.string.success_internal))) {
-                    storage.ipAddress = ipAddress
-                    if (checkBoxRememberPassword.isChecked) {
-                        storage.pin = Integer.parseInt(textPin.text.toString())
-                        storage.token = response.internalMessage
-                        storageFile.writeText(storage.toJson())
-                    }
-                    success = true
-                }
-                requireActivity().runOnUiThread {
-                    Toast.makeText(this@LoginFragment.context, response.text, Toast.LENGTH_SHORT)
-                        .show()
-                    if (success) {
-                        startNextActivity(
-                            ipAddress = ipAddress,
-                            token = response.internalMessage,
-                        )
-                    }
-                }
             }
-
         }
 
     }
@@ -115,6 +111,8 @@ class LoginFragment : Fragment(), CoroutineScope by MainScope() {
         startActivity(intent)
         requireActivity().finish()
     }
+
+    private fun Fragment.filesDir() = requireActivity().applicationContext.filesDir
 
     override fun onDestroyView() {
         super.onDestroyView()

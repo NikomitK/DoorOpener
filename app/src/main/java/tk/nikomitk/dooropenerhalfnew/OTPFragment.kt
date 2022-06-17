@@ -66,8 +66,7 @@ class OTPFragment : Fragment(), CoroutineScope by MainScope() {
                         ipAddress = binding.textOnetimeAddressFrag.text.toString(),
                     )
                     requireActivity().runOnUiThread {
-                        Toast.makeText(this@OTPFragment.context, response.text, Toast.LENGTH_SHORT)
-                            .show()
+                        response.text.toast(requireContext())
                         if (response.internalMessage == getString(R.string.success_internal))
                             binding.textOnetimePinFrag.setText("")
                     }

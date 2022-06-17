@@ -11,7 +11,6 @@ class LogAdapter(private val dataSet: Array<String>) :
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val logTextView: TextView = view.findViewById(R.id.logTextView)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

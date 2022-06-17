@@ -11,6 +11,7 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketTimeoutException
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 
@@ -31,7 +32,7 @@ object NetworkUtil {
                             BufferedReader(InputStreamReader(socket.inputStream)).readLine(),
                             Response::class.java
                         )
-                    } catch (exception: Exception) {
+                    } catch (timeout: SocketTimeoutException) {
                         return@async Response("Timeout :c", "timeout")
                     } catch (exception: java.lang.Exception) {
                         exception.printStackTrace()
@@ -48,10 +49,8 @@ object NetworkUtil {
     private fun sendTLsMessage(message: String, ipAddress: String): Response? {
         return try {
             val socket = SSLSocketFactory.getDefault().createSocket() as SSLSocket
-            println("vor connect")
             socket.connect(InetSocketAddress(ipAddress, 5688), 1000)
             socket.soTimeout = 1000
-            println("nach connect")
             PrintWriter(socket.outputStream, true).println(message)
             Gson().fromJson(
                 BufferedReader(InputStreamReader(socket.inputStream)).readLine(),
@@ -59,7 +58,6 @@ object NetworkUtil {
             )
 
         } catch (exception: Exception) {
-            println("catch")
             null
         }
     }

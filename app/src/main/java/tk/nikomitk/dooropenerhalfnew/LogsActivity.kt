@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.thekhaeng.recyclerviewmargin.LinearLayoutMargin
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import tk.nikomitk.dooropenerhalfnew.messagetypes.Message
 import tk.nikomitk.dooropenerhalfnew.messagetypes.toJson
 import java.io.File
@@ -55,9 +58,11 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         R.id.action_sync -> {
             launch(Dispatchers.IO) {
                 val response = NetworkUtil.sendMessage(
-                    message = Message(type = getString(R.string.request_logs_type),
-                    token = token,
-                    content = "").toJson(),
+                    message = Message(
+                        type = getString(R.string.request_logs_type),
+                        token = token,
+                        content = ""
+                    ).toJson(),
                     ipAddress = ipAddress
                 )
                 if (response.internalMessage == getString(R.string.success_internal)) {
@@ -96,7 +101,12 @@ class LogsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun logout() {
-        startActivity(Intent(this, LoginActivity::class.java).putExtra(getString(R.string.logout_extra), true))
+        startActivity(
+            Intent(
+                this,
+                LoginActivity::class.java
+            ).putExtra(getString(R.string.logout_extra), true)
+        )
         OpenActivity.thisActivity.finish()
         finish()
     }
