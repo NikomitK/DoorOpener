@@ -10,5 +10,6 @@ It enables you to open your door from your smartphone, all you need is a Raspber
   <li>Onetime passwords</li>
   <li>Support for physical keypads to enter the pin</li>
   <li>Logging of all activities</li>
+  <li>Homescreen widget to open your door without opening the app</li>
  </ul>
  
