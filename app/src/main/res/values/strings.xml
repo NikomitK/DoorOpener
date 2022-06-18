@@ -13,7 +13,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Toolbar Titles -->
-    <string name="open_header">The better door opener ;P</string>
+    <string name="open_header">DoorOpener :D</string>
     <string name="settings_header">Settings</string>
     <string name="otp_header">One-time-passwords</string>
 
