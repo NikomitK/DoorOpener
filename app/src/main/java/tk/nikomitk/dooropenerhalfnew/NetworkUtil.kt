@@ -36,7 +36,7 @@ object NetworkUtil {
                         return@async Response("Timeout :c", "timeout")
                     } catch (exception: java.lang.Exception) {
                         exception.printStackTrace()
-                        return@async Response(exception.message!!, "Not sent")
+                        return@async Response(exception.cause.toString(), "Not sent")
                     }
                 }
             }
