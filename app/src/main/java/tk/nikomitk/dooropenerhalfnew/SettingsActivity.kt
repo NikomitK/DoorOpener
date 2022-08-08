@@ -2,12 +2,14 @@ package tk.nikomitk.dooropenerhalfnew
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.marcoscg.licenser.Library
+import com.marcoscg.licenser.License
+import com.marcoscg.licenser.LicenserDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -116,6 +118,93 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 true
             }
 
+            /* I know this is a garbage way to do it, but there are literally no useful libraries
+            with good documentation on how to do this and I just want to finish this project
+             */
+            val licencesButton: Preference = findPreference("thirdPartyLicences")!!
+            licencesButton.setOnPreferenceClickListener {
+                LicenserDialog(this.requireContext())
+                    .setTitle("Licenses")
+                    .setCustomNoticeTitle("Notices for files:")
+                    .setLibrary(
+                        Library(
+                            "Core Kotlin Extensions",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Android AppCompat Library",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Material Components For Android",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Android ConstraintLayout",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Android Navigation Fragment Kotlin Extensions",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Android Navigation UI Kotlin Extensions",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "AndroidX Preference",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Gson",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "RecyclerViewMarginDecoration",
+                            null,
+                            License.APACHE2
+                        )
+                    )
+                    .setLibrary(
+                        Library(
+                            "Licenser",
+                            "https://github.com/marcoscgdev/Licenser",
+                            License.MIT
+                        )
+                    )
+                    .setPositiveButton(
+                        android.R.string.ok
+                    ) { dialogInterface, i ->
+                        // TODO: 11/02/2018
+                    }
+                    .show()
+                true
+            }
+
             val resetButton: Preference = findPreference("resetDevice")!!
             resetButton.setOnPreferenceClickListener {
                 launch(Dispatchers.IO) {
@@ -130,8 +219,10 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     requireActivity().runOnUiThread {
                         response.text.toast(requireContext())
                     }
-                    if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal)) ||
-                        response.internalMessage.lowercase().contains(getString(R.string.success_internal))
+                    if (response.internalMessage.lowercase()
+                            .contains(getString(R.string.invalid_token_internal)) ||
+                        response.internalMessage.lowercase()
+                            .contains(getString(R.string.success_internal))
                     ) {
                         logout()
                     }
@@ -153,7 +244,9 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     requireActivity().runOnUiThread {
                         response.text.toast(requireContext())
                     }
-                    if (response.internalMessage.lowercase().contains(getString(R.string.invalid_token_internal))) {
+                    if (response.internalMessage.lowercase()
+                            .contains(getString(R.string.invalid_token_internal))
+                    ) {
                         logout()
                     }
                 }

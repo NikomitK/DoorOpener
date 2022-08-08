@@ -32,6 +32,10 @@
             android:title="@string/tls_title"
             android:defaultValue="false"
             />
+        <Preference
+            android:key="thirdPartyLicences"
+            android:summary="@string/thirdPartyLicences_summary"
+            android:title="@string/thirdPartyLicences_title"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/logout_header">

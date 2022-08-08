@@ -86,6 +86,8 @@
     <string name="appwidget_text">OPEN</string>
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
+    <string name="thirdPartyLicences_summary">View the third party licences</string>
+    <string name="thirdPartyLicences_title">Third party licences</string>
 
 
 </resources>
