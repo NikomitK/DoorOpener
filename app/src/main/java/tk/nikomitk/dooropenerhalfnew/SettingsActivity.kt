@@ -3,10 +3,7 @@ package tk.nikomitk.dooropenerhalfnew
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.EditTextPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreferenceCompat
+import androidx.preference.*
 import com.marcoscg.licenser.Library
 import com.marcoscg.licenser.License
 import com.marcoscg.licenser.LicenserDialog
@@ -250,6 +247,13 @@ class SettingsActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         logout()
                     }
                 }
+                true
+            }
+
+            val widgetTimePreference: SeekBarPreference = findPreference("widgetTime")!!
+            widgetTimePreference.setOnPreferenceChangeListener { _, newValue ->
+                OpenActivity.storage.widgetTime = (newValue as Int)
+                OpenActivity.storage.save(OpenActivity.storageFile)
                 true
             }
 

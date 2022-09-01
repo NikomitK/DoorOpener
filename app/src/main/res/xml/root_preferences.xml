@@ -26,12 +26,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/other_header">
+        <SeekBarPreference
+            android:key="widgetTime"
+            android:defaultValue="2"
+            android:max="10"
+            app:min="1"
+            android:title="@string/widget_time_title"
+            app:showSeekBarValue="true" />
         <SwitchPreferenceCompat
             android:key="useTls"
             android:summary="@string/tls_summary"
             android:title="@string/tls_title"
-            android:defaultValue="false"
-            />
+            android:defaultValue="false" />
         <Preference
             android:key="thirdPartyLicences"
             android:summary="@string/thirdPartyLicences_summary"

@@ -40,6 +40,7 @@
     <!-- Other Preferences -->
     <string name="tls_title">Use TLS</string>
     <string name="tls_summary">Encrypt the communication via TLS</string>
+    <string name="widget_time_title">Widget time</string>
 
     <!-- Action Menu Titles -->
     <string name="settings_title">Settings</string>

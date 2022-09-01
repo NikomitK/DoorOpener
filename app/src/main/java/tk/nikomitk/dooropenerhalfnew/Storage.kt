@@ -11,6 +11,7 @@ data class Storage(
     var token: String? = null,
     var rememberPin: Boolean = false,
     var otps: ArrayList<Otp> = ArrayList(),
+    var widgetTime: Int = 2
 )
 val gson = Gson()
 

@@ -44,7 +44,7 @@ class OpenWidget : AppWidgetProvider() {
                     Message(
                         "open",
                         storage.token!!,
-                        "1"
+                        storage.widgetTime.toString()
                     ).toJson(),
                     storage.ipAddress!!
                 )
