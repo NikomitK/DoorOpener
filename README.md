@@ -1,5 +1,5 @@
 # DoorOpener
-This App is supposed to be used in combination with my DoorOpenerServer application.
+This App is supposed to be used in combination with my [DoorOpenerServer application](https://github.com/NikomitK/DoorOpenerServer).
 
 It enables you to open your door from your smartphone, all you need is a Raspberry Pi (or similar hardware) that's connected to the preexisting hardware.
 
